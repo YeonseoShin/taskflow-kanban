@@ -7,45 +7,153 @@
 <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
 </head>
 <body>
+
+<!-- HEADER -->
 <header>
-  <div class="logo"><span class="logo-badge">T</span> TaskFlow Board</div>
-  <span class="hint">카드를 드래그하여 컬럼 간 이동해보세요</span>
-  <a href="../../index.html" class="back">← 포트폴리오로</a>
+  <div class="header-left">
+    <a href="../../index.html" class="back-btn">←</a>
+    <div>
+      <div class="board-name">TaskFlow Board</div>
+      <div class="board-meta" id="board-meta">로딩 중...</div>
+    </div>
+  </div>
+  <div class="header-center">
+    <div class="progress-wrap">
+      <div class="progress-bar" id="progress-bar"></div>
+    </div>
+    <div class="progress-label" id="progress-label">0% 완료</div>
+  </div>
+  <div class="header-right">
+    <div class="filter-wrap">
+      <select id="filter-tag" onchange="applyFilter()">
+        <option value="">전체 태그</option>
+        <option value="UI/UX">UI/UX</option>
+        <option value="Frontend">Frontend</option>
+        <option value="Backend">Backend</option>
+        <option value="Data">Data</option>
+        <option value="QA">QA</option>
+        <option value="Bug">Bug</option>
+      </select>
+      <select id="filter-assignee" onchange="applyFilter()">
+        <option value="">전체 담당자</option>
+        <option value="신연서">신연서</option>
+        <option value="미할당">미할당</option>
+      </select>
+    </div>
+    <button class="new-card-btn" onclick="openModal()">
+      <span>+</span> 카드 추가
+    </button>
+  </div>
 </header>
+
+<!-- BOARD -->
 <div class="board">
   <div class="col" data-status="todo">
-    <div class="col-head"><span class="dot" style="background:#f59e0b;"></span>To Do<span class="cnt" id="cnt-todo">3</span></div>
-    <div class="col-body" id="kb-todo">
-      <div class="card" draggable="true"><span class="ctag" style="background:#fef3c7;color:#92400e;">UI/UX</span><div class="ctitle">다크모드 테마 시안 제작</div><div class="cmeta">디자인 · 미할당</div></div>
-      <div class="card" draggable="true"><span class="ctag" style="background:#dbeafe;color:#1e40af;">Frontend</span><div class="ctitle">반응형 레이아웃 리팩토링</div><div class="cmeta">개발 · 신연서</div></div>
-      <div class="card" draggable="true"><span class="ctag" style="background:#dcfce7;color:#166534;">Backend</span><div class="ctitle">REST API 엔드포인트 설계</div><div class="cmeta">설계 · 미할당</div></div>
+    <div class="col-head">
+      <div class="col-head-left">
+        <span class="col-dot" style="background:#f59e0b;"></span>
+        <span class="col-title">To Do</span>
+        <span class="col-cnt" id="cnt-todo">0</span>
+      </div>
+      <button class="col-add-btn" onclick="openModal('todo')" title="카드 추가">+</button>
     </div>
-    <button class="add-btn" onclick="addCard(this)">+ 카드 추가</button>
+    <div class="col-body" id="kb-todo"></div>
   </div>
+
   <div class="col" data-status="inprogress">
-    <div class="col-head"><span class="dot" style="background:#6366f1;"></span>In Progress<span class="cnt" id="cnt-inprogress">2</span></div>
-    <div class="col-body" id="kb-inprogress">
-      <div class="card" draggable="true"><span class="ctag" style="background:#dbeafe;color:#1e40af;">Frontend</span><div class="ctitle">Drag &amp; Drop 로직 구현</div><div class="cmeta">개발 · 신연서</div></div>
-      <div class="card" draggable="true"><span class="ctag" style="background:#f3e8ff;color:#6b21a8;">Data</span><div class="ctitle">TrustScore 알고리즘 고도화</div><div class="cmeta">분석 · 신연서</div></div>
+    <div class="col-head">
+      <div class="col-head-left">
+        <span class="col-dot" style="background:#6366f1;"></span>
+        <span class="col-title">In Progress</span>
+        <span class="col-cnt" id="cnt-inprogress">0</span>
+      </div>
+      <button class="col-add-btn" onclick="openModal('inprogress')" title="카드 추가">+</button>
     </div>
-    <button class="add-btn" onclick="addCard(this)">+ 카드 추가</button>
+    <div class="col-body" id="kb-inprogress"></div>
   </div>
+
   <div class="col" data-status="review">
-    <div class="col-head"><span class="dot" style="background:#38bdf8;"></span>Review<span class="cnt" id="cnt-review">1</span></div>
-    <div class="col-body" id="kb-review">
-      <div class="card" draggable="true"><span class="ctag" style="background:#cffafe;color:#0e7490;">QA</span><div class="ctitle">관절 각도 계산 단위 테스트</div><div class="cmeta">테스트 · 신연서</div></div>
+    <div class="col-head">
+      <div class="col-head-left">
+        <span class="col-dot" style="background:#38bdf8;"></span>
+        <span class="col-title">Review</span>
+        <span class="col-cnt" id="cnt-review">0</span>
+      </div>
+      <button class="col-add-btn" onclick="openModal('review')" title="카드 추가">+</button>
     </div>
-    <button class="add-btn" onclick="addCard(this)">+ 카드 추가</button>
+    <div class="col-body" id="kb-review"></div>
   </div>
+
   <div class="col" data-status="done">
-    <div class="col-head"><span class="dot" style="background:#10b981;"></span>Done<span class="cnt" id="cnt-done">2</span></div>
-    <div class="col-body" id="kb-done">
-      <div class="card done" draggable="true"><span class="ctag" style="background:#fee2e2;color:#991b1b;">Bug</span><div class="ctitle done-title">모바일 레이아웃 깨짐 수정</div><div class="cmeta">완료</div></div>
-      <div class="card done" draggable="true"><span class="ctag" style="background:#dcfce7;color:#166534;">Backend</span><div class="ctitle done-title">예금보험 데이터 파이프라인</div><div class="cmeta">완료</div></div>
+    <div class="col-head">
+      <div class="col-head-left">
+        <span class="col-dot" style="background:#10b981;"></span>
+        <span class="col-title">Done</span>
+        <span class="col-cnt" id="cnt-done">0</span>
+      </div>
+      <button class="col-add-btn" onclick="openModal('done')" title="카드 추가">+</button>
     </div>
-    <button class="add-btn" onclick="addCard(this)">+ 카드 추가</button>
+    <div class="col-body" id="kb-done"></div>
   </div>
 </div>
+
+<!-- MODAL -->
+<div id="modal-bg" class="modal-bg hidden" onclick="closeModalBg(event)">
+  <div class="modal">
+    <div class="modal-header">
+      <h2 class="modal-title" id="modal-title">새 카드</h2>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="field">
+        <label>제목 <span class="required">*</span></label>
+        <input type="text" id="m-title" placeholder="작업 내용을 입력하세요" />
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label>태그</label>
+          <select id="m-tag">
+            <option value="Frontend">Frontend</option>
+            <option value="Backend">Backend</option>
+            <option value="UI/UX">UI/UX</option>
+            <option value="Data">Data</option>
+            <option value="QA">QA</option>
+            <option value="Bug">Bug</option>
+            <option value="기타">기타</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>상태</label>
+          <select id="m-status">
+            <option value="todo">To Do</option>
+            <option value="inprogress">In Progress</option>
+            <option value="review">Review</option>
+            <option value="done">Done</option>
+          </select>
+        </div>
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label>담당자</label>
+          <input type="text" id="m-assignee" placeholder="이름 (미할당 가능)" />
+        </div>
+        <div class="field">
+          <label>기한</label>
+          <input type="date" id="m-due" />
+        </div>
+      </div>
+      <div class="field">
+        <label>메모</label>
+        <textarea id="m-memo" placeholder="추가 설명 (선택)" rows="2"></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-cancel" onclick="closeModal()">취소</button>
+      <button class="btn-submit" onclick="submitCard()">카드 추가</button>
+    </div>
+  </div>
+</div>
+
 <script src="kanban.js"></script>
 </body>
 </html>
